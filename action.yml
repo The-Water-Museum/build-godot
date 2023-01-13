@@ -55,12 +55,14 @@ runs:
       with:
         fetch-depth: 0
     - name: Install Wine
+      shell: bash
       id: wine_install
       run: |
         sudo apt update
         sudo apt -y install wine64
         echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
     - name: Install Build Tools
+      shell: bash
       id: binutils_install
       run: |
         sudo apt -y install binutils build-essential
