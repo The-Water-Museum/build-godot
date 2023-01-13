@@ -82,8 +82,6 @@ runs:
         export_debug: ${{ inputs.godot-debug }}
         verbose: ${{ inputs.godot-verbose }}
         use_godot_4: ${{ inputs.godot-v4 }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Upload HTML5 build artifact
       uses: actions/upload-artifact@v3
       with:
