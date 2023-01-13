@@ -1,0 +1,114 @@
+name: "Godot Builder"
+author: chtzvt
+description: Builds Godot Engine games with cross-compilation support for macOS.
+branding:
+  icon: 'thumbs-up'  
+  color: 'white'
+
+inputs:
+  osxcross-sdk-url: 
+    description: "Base URL of where to find macOS SDKs"
+    required: false
+    default: "https://cdn.ctis.me/file/ctisme-cdn/files-pub/ext/water-museum/macos-sdk"
+  osxcross-debug: 
+    description: "Enable osxcross debug output"
+    required: false
+    default: false
+  osxcross-osx-version: 
+    description: "Osxcross target version"
+    required: false
+    default: "13.0"
+  godot-relpath:
+    description: "Relative path for Godot builds"
+    required: false
+    default: .
+  godot-executable-url:
+    description: "URL of a Godot headless executable"
+    required: false
+    default: "https://cdn.ctis.me/file/ctisme-cdn/files-pub/ext/water-museum/godot/Godot_v3.5.1-stable_linux_headless.64.zip"
+  godot-export-templates-url:
+    description: "URL of Godot export templates"
+    required: false
+    default: "https://cdn.ctis.me/file/ctisme-cdn/files-pub/ext/water-museum/godot/Godot_v3.5.1-stable_export_templates.tpz"
+  godot-debug:
+    description: "Enable debug mode for builds"
+    required: false
+    default: false
+  godot-verbose:
+    description: "Enable verbose output during build"
+    required: false
+    default: false
+  godot-v4:
+    description: "Use Godot v4"
+    required: false
+    default: false
+  artifact-retention-days:
+    description: "Number of days to retain build artifacts"
+    required: false
+    default: 3
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out game repository
+      uses: actions/checkout@v2.3.1
+      with:
+        fetch-depth: 0
+    - name: Install Wine
+      id: wine_install
+      run: |
+        sudo apt update
+        sudo apt -y install wine64
+        echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
+    - name: Install Build Tools
+      id: binutils_install
+      run: |
+        sudo apt -y install binutils build-essential
+    - name: Install osxcross
+      id: osxcross_install
+      uses: The-Water-Museum/setup-osxcross@v1.5
+      with:
+        osx-version: ${{ inputs.osxcross-osx-version }}
+        sdk-url: ${{ inputs.osxcross-sdk-url }}
+    - name: Build Game with Godot Engine
+      id: build
+      uses: The-Water-Museum/godot-export@v4.6.0
+      with:
+        godot_executable_download_url: ${{ inputs.godot-executable-url }}
+        godot_export_templates_download_url: ${{ inputs.godot-export-templates-url }}
+        relative_project_path: ${{ inputs.godot-relpath }}
+        archive_output: true
+        wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
+        export_debug: ${{ inputs.godot-debug }}
+        verbose: ${{ inputs.godot-verbose }}
+        use_godot_4: ${{ inputs.godot-v4 }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload HTML5 build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-HTML5
+        path: ${{ steps.build.outputs.archive_directory }}/HTML5.zip
+        if-no-files-found: error
+        retention-days: ${{ inputs.artifact-retention-days }}
+    - name: Upload Windows build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-Windows
+        path: ${{ steps.build.outputs.archive_directory }}/Windows.zip
+        if-no-files-found: error
+        retention-days: ${{ inputs.artifact-retention-days }}
+    - name: Upload Linux build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-Linux_X11
+        path: ${{ steps.build.outputs.archive_directory }}/Linux_X11.zip
+        if-no-files-found: error
+        retention-days: ${{ inputs.artifact-retention-days }}
+    - name: Upload macOS build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-macOS
+        path: ${{ steps.build.outputs.archive_directory }}/macOS.zip
+        if-no-files-found: error
+        retention-days: ${{ inputs.artifact-retention-days }}
