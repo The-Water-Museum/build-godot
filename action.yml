@@ -13,7 +13,7 @@ inputs:
   osxcross-debug: 
     description: "Enable osxcross debug output"
     required: false
-    default: false
+    default: "false"
   osxcross-osx-version: 
     description: "Osxcross target version"
     required: false
@@ -33,19 +33,19 @@ inputs:
   godot-debug:
     description: "Enable debug mode for builds"
     required: false
-    default: false
+    default: "false"
   godot-verbose:
     description: "Enable verbose output during build"
     required: false
-    default: false
+    default: "false"
   godot-v4:
     description: "Use Godot v4"
     required: false
-    default: false
+    default: "false"
   artifact-retention-days:
     description: "Number of days to retain build artifacts"
     required: false
-    default: 3
+    default: "3"
   version: 
     description: "A version number to identify the build"
     required: false 
@@ -76,6 +76,7 @@ runs:
       with:
         osx-version: ${{ inputs.osxcross-osx-version }}
         sdk-url: ${{ inputs.osxcross-sdk-url }}
+        debug: ${{ inputs.osxcross-debug }}
     - name: "Embed build version metadata"
       shell: bash
       if: ${{ steps.release.outputs.version != '' }}
