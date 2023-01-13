@@ -46,6 +46,10 @@ inputs:
     description: "Number of days to retain build artifacts"
     required: false
     default: 3
+  version: 
+    description: "A version number to identify the build"
+    required: false 
+    default: "version_unknown"
 
 runs:
   using: "composite"
@@ -72,6 +76,14 @@ runs:
       with:
         osx-version: ${{ inputs.osxcross-osx-version }}
         sdk-url: ${{ inputs.osxcross-sdk-url }}
+    - name: "Embed build version metadata"
+      shell: bash
+      if: ${{ steps.release.outputs.version != '' }}
+      run: |
+          sed -i 's/application\/file_version=".*"/application\/file_version="${{ inputs.version }}"/g' ./export_presets.cfg
+          sed -i 's/application\/product_version=".*"/application\/product_version="${{ inputs.version }}"/g' ./export_presets.cfg
+          sed -i 's/application\/short_version=".*"/application\/short_version="${{ inputs.version }}"/g' ./export_presets.cfg
+          sed -i 's/application\/version=".*"/application\/version="${{ inputs.version }}"/g' ./export_presets.cfg
     - name: Build Game with Godot Engine
       id: build
       uses: The-Water-Museum/godot-export@v4.6.0
