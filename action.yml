@@ -79,12 +79,12 @@ runs:
         debug: ${{ inputs.osxcross-debug }}
     - name: "Embed build version metadata"
       shell: bash
-      if: ${{ steps.release.outputs.version != '' }}
       run: |
           sed -i 's/application\/file_version=".*"/application\/file_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/product_version=".*"/application\/product_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/short_version=".*"/application\/short_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/version=".*"/application\/version="${{ inputs.version }}"/g' ./export_presets.cfg
+          sed -i 's/application\/info=".*"/application\/info="${{ inputs.version }}"/g' ./export_presets.cfg
     - name: Build Game with Godot Engine
       id: build
       uses: The-Water-Museum/godot-export@v4.6.0
