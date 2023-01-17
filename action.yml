@@ -50,6 +50,13 @@ inputs:
     description: "A version number to identify the build"
     required: false 
     default: "version_unknown"
+  build-config: 
+    description: "Filename of export presets configuration"
+    required: false 
+    default: "export_presets_all.cfg"
+  channel: 
+    description: "Name of release channel (used in feature flags)"
+    required: true 
 
 runs:
   using: "composite"
@@ -77,14 +84,39 @@ runs:
         osx-version: ${{ inputs.osxcross-osx-version }}
         sdk-url: ${{ inputs.osxcross-sdk-url }}
         debug: ${{ inputs.osxcross-debug }}
+    - name: "Apply base build configurations"
+      shell: bash
+      run: |
+          # Overwrite export presets with alternate tip build config
+          cp buildcfgs/${{ inputs.build-config }} export_presets.cfg
+          cp buildcfgs/override_presets.cfg override.cfg
+    - name: Get date
+      shell: bash
+      run: |
+          echo "BUILD_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
     - name: "Embed build version metadata"
       shell: bash
       run: |
+          sed -i 's/application\/file_description=".*"/application\/file_description="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/file_version=".*"/application\/file_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/product_version=".*"/application\/product_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/short_version=".*"/application\/short_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/version=".*"/application\/version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/info=".*"/application\/info="${{ inputs.version }}"/g' ./export_presets.cfg
+    - name: "Embed build config overrides"
+      shell: bash
+      run: |
+          sed -i 's/build\/version=".*"/build\/version="${{ inputs.version }}"/g' ./override.cfg
+          sed -i 's/build\/date=".*"/build\/date="${{ env.BUILD_DATE }}"/g' ./override.cfg
+          sed -i 's/build\/commit_sha=".*"/build\/commit_sha="${{ github.sha }}"/g' ./override.cfg
+          sed -i 's/build\/channel=".*"/build\/channel="${{ inputs.channel }}"/g' ./override.cfg
+    - name: Override application title with version info for non-stable releases
+      if: "!contains(github.event.release.tag_name, '-stable')"
+      shell: bash
+      run: |
+          echo '' >>./override.cfg
+          echo "[application]" >>./override.cfg
+          echo 'config/name="${{ inputs.version }}"' >>./override.cfg
     - name: Build Game with Godot Engine
       id: build
       uses: The-Water-Museum/godot-export@v4.6.0
