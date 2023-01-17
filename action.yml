@@ -106,10 +106,10 @@ runs:
     - name: "Embed build config overrides"
       shell: bash
       run: |
-          sed -i 's/build\/version=".*"/build\/version="${{ inputs.version }}"/g' ./override.cfg
-          sed -i 's/build\/date=".*"/build\/date="${{ env.BUILD_DATE }}"/g' ./override.cfg
-          sed -i 's/build\/commit_sha=".*"/build\/commit_sha="${{ github.sha }}"/g' ./override.cfg
-          sed -i 's/build\/channel=".*"/build\/channel="${{ inputs.channel }}"/g' ./override.cfg
+          sed -i 's/info\/version=".*"/info\/version="${{ inputs.version }}"/g' ./override.cfg
+          sed -i 's/info\/date=".*"/info\/date="${{ env.BUILD_DATE }}"/g' ./override.cfg
+          sed -i 's/info\/commit_sha=".*"/info\/commit_sha="${{ github.sha }}"/g' ./override.cfg
+          sed -i 's/info\/channel=".*"/info\/channel="${{ inputs.channel }}"/g' ./override.cfg
     - name: Override application title with version info for non-stable releases
       if: "!contains(inputs.version, '-stable')"
       shell: bash
