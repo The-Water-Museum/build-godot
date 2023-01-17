@@ -33,15 +33,15 @@ inputs:
   godot-debug:
     description: "Enable debug mode for builds"
     required: false
-    default: "false"
+    default: false
   godot-verbose:
     description: "Enable verbose output during build"
     required: false
-    default: "false"
+    default: false
   godot-v4:
     description: "Use Godot v4"
     required: false
-    default: "false"
+    default: false
   artifact-retention-days:
     description: "Number of days to retain build artifacts"
     required: false
