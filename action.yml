@@ -111,7 +111,7 @@ runs:
           sed -i 's/build\/commit_sha=".*"/build\/commit_sha="${{ github.sha }}"/g' ./override.cfg
           sed -i 's/build\/channel=".*"/build\/channel="${{ inputs.channel }}"/g' ./override.cfg
     - name: Override application title with version info for non-stable releases
-      if: "!contains(github.event.release.tag_name, '-stable')"
+      if: "!contains(inputs.version, '-stable')"
       shell: bash
       run: |
           echo '' >>./override.cfg
