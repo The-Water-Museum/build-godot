@@ -42,6 +42,10 @@ inputs:
     description: "Use Godot v4"
     required: false
     default: false
+  godot-encrypt-scripts:
+    description: "Enable script encryption in Godot build"
+    required: false
+    default: false
   artifact-retention-days:
     description: "Number of days to retain build artifacts"
     required: false
@@ -76,7 +80,7 @@ runs:
       shell: bash
       id: binutils_install
       run: |
-        sudo apt -y install binutils build-essential
+        sudo apt -y install binutils build-essential openssl
     - name: Install osxcross
       id: osxcross_install
       uses: The-Water-Museum/setup-osxcross@v1.5
@@ -94,6 +98,10 @@ runs:
       shell: bash
       run: |
           echo "BUILD_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+    - shell: bash
+      name: Configure Script Encryption
+      if: ${{ inputs.godot-encrypt-scripts == 'true' }}
+      run: echo "SCRIPT_AES256_ENCRYPTION_KEY=`openssl rand -hex 32`" >> $GITHUB_ENV
     - name: "Embed build version metadata"
       shell: bash
       run: |
