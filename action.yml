@@ -101,7 +101,9 @@ runs:
     - shell: bash
       name: Configure Script Encryption
       if: ${{ inputs.godot-encrypt-scripts == 'true' }}
-      run: echo "SCRIPT_AES256_ENCRYPTION_KEY=`openssl rand -hex 32`" >> $GITHUB_ENV
+      run: | 
+          echo "SCRIPT_AES256_ENCRYPTION_KEY=`openssl rand -hex 32`" >> $GITHUB_ENV
+          sed -i 's/script_encryption_key=".*"/script_encryption_key="${{ env.SCRIPT_AES256_ENCRYPTION_KEY }}"/g' ./export_presets.cfg
     - name: "Embed build version metadata"
       shell: bash
       run: |
