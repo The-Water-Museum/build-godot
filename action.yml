@@ -132,7 +132,7 @@ runs:
       if: ${{ inputs.disable-steam-sdk == 'true' }}
       run: | 
           sed -i 's/disable = false/disable = true/g' ./addons/steam_api/settings.tres || true
-    - name: "Embed build version metadata"
+    - name: "Embed export version metadata"
       shell: bash
       run: |
           sed -i 's/application\/file_description=".*"/application\/file_description="${{ inputs.version }}"/g' ./export_presets.cfg
@@ -141,9 +141,13 @@ runs:
           sed -i 's/application\/short_version=".*"/application\/short_version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/version=".*"/application\/version="${{ inputs.version }}"/g' ./export_presets.cfg
           sed -i 's/application\/info=".*"/application\/info="${{ inputs.version }}"/g' ./export_presets.cfg
-    - name: "Embed build config overrides"
+    - name: "Stamp build information"
       shell: bash
       run: |
+          sed -i 's/info\/version=".*"/info\/version="${{ inputs.version }}"/g' ./export_presets.cfg
+          sed -i 's/info\/date=".*"/info\/date="${{ env.BUILD_DATE }}"/g' ./export_presets.cfg
+          sed -i 's/info\/commit_sha=".*"/info\/commit_sha="${{ github.sha }}"/g' ./export_presets.cfg
+          sed -i 's/info\/channel=".*"/info\/channel="${{ inputs.channel }}"/g' ./export_presets.cfg
           sed -i 's/info\/version=".*"/info\/version="${{ inputs.version }}"/g' ./override.cfg
           sed -i 's/info\/date=".*"/info\/date="${{ env.BUILD_DATE }}"/g' ./override.cfg
           sed -i 's/info\/commit_sha=".*"/info\/commit_sha="${{ github.sha }}"/g' ./override.cfg
