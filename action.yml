@@ -172,26 +172,26 @@ runs:
       with:
         name: build-HTML5
         path: ${{ steps.build.outputs.archive_directory }}/HTML5.zip
-        if-no-files-found: error
+        if-no-files-found: ignore
         retention-days: ${{ inputs.artifact-retention-days }}
     - name: Upload Windows build artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-Windows
         path: ${{ steps.build.outputs.archive_directory }}/Windows.zip
-        if-no-files-found: error
+        if-no-files-found: ignore
         retention-days: ${{ inputs.artifact-retention-days }}
     - name: Upload Linux build artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-Linux_X11
         path: ${{ steps.build.outputs.archive_directory }}/Linux_X11.zip
-        if-no-files-found: error
+        if-no-files-found: ignore
         retention-days: ${{ inputs.artifact-retention-days }}
     - name: Upload macOS build artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-macOS
         path: ${{ steps.build.outputs.archive_directory }}/macOS.zip
-        if-no-files-found: error
+        if-no-files-found: ignore
         retention-days: ${{ inputs.artifact-retention-days }}
