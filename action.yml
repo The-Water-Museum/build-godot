@@ -144,10 +144,10 @@ runs:
     - name: "Stamp build information"
       shell: bash
       run: |
-          sed -i 's/info\/version=".*"/info\/version="${{ inputs.version }}"/g' ./export_presets.cfg
-          sed -i 's/info\/date=".*"/info\/date="${{ env.BUILD_DATE }}"/g' ./export_presets.cfg
-          sed -i 's/info\/commit_sha=".*"/info\/commit_sha="${{ github.sha }}"/g' ./export_presets.cfg
-          sed -i 's/info\/channel=".*"/info\/channel="${{ inputs.channel }}"/g' ./export_presets.cfg
+          sed -i 's/info\/version=".*"/info\/version="${{ inputs.version }}"/g' ./project.godot
+          sed -i 's/info\/date=".*"/info\/date="${{ env.BUILD_DATE }}"/g' ./project.godot
+          sed -i 's/info\/commit_sha=".*"/info\/commit_sha="${{ github.sha }}"/g' ./project.godot
+          sed -i 's/info\/channel=".*"/info\/channel="${{ inputs.channel }}"/g' ./project.godot
           sed -i 's/info\/version=".*"/info\/version="${{ inputs.version }}"/g' ./override.cfg
           sed -i 's/info\/date=".*"/info\/date="${{ env.BUILD_DATE }}"/g' ./override.cfg
           sed -i 's/info\/commit_sha=".*"/info\/commit_sha="${{ github.sha }}"/g' ./override.cfg
