@@ -113,11 +113,13 @@ runs:
           echo "SCRIPT_AES256_ENCRYPTION_KEY=`openssl rand -hex 32`" >> $GITHUB_ENV
           sed -i 's/script_encryption_key=".*"/script_encryption_key="${{ env.SCRIPT_AES256_ENCRYPTION_KEY }}"/g' ./export_presets.cfg
     - shell: bash
-      name: Set Steam SDK Location
+      name: Configure Steam SDK
       run: | 
             echo "STEAM_SDK_LOCATION=$(pwd)/../steam_sdk" >> $GITHUB_ENV
+            # Fixes ERROR: Code Signing: Ad-hoc signed applications require the 'Disable Library Validation' entitlement to load dynamic libraries.
+            sed -i 's+codesign/entitlements/disable_library_validation=false+codesign/entitlements/disable_library_validation=true+g' ./export_presets.cfg
     - shell: bash
-      name: Set Up Steam SDK
+      name: Install Steam SDK
       if: ${{ inputs.disable-steam-sdk == 'false' }}
       run: | 
             curl -o ./steam_sdk.zip ${{ inputs.steam-sdk-url }}
@@ -125,8 +127,6 @@ runs:
             unzip ./steam_sdk.zip -d ${{ env.STEAM_SDK_LOCATION }}
             rm -f ./steam_sdk.zip
             sed -i 's+sdk_dir = ".*"+sdk_dir = "${{ env.STEAM_SDK_LOCATION }}/sdk"+g' ./addons/steam_api/settings.tres || true
-            # Fixes ERROR: Code Signing: Ad-hoc signed applications require the 'Disable Library Validation' entitlement to load dynamic libraries.
-            sed -i 's+codesign/entitlements/disable_library_validation=false+codesign/entitlements/disable_library_validation=true+g' ./export_presets.cfg
     - shell: bash
       name: Disable Steam SDK
       if: ${{ inputs.disable-steam-sdk == 'true' }}
