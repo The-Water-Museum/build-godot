@@ -61,6 +61,14 @@ inputs:
   channel: 
     description: "Name of release channel (used in feature flags)"
     required: true 
+  disable-steam-sdk: 
+    description: "Whether or not to enable the Steam SDK in builds"
+    required: false 
+    default: false
+  steam-sdk-url:
+    description: "URL of a Steam SDK ZIP file"
+    required: false 
+    default: "https://cdn.ctis.me/file/ctisme-cdn/files-pub/ext/water-museum/steam-sdk/steamworks_sdk_155.zip"
 
 runs:
   using: "composite"
@@ -104,6 +112,21 @@ runs:
       run: | 
           echo "SCRIPT_AES256_ENCRYPTION_KEY=`openssl rand -hex 32`" >> $GITHUB_ENV
           sed -i 's/script_encryption_key=".*"/script_encryption_key="${{ env.SCRIPT_AES256_ENCRYPTION_KEY }}"/g' ./export_presets.cfg
+    - shell: bash
+      name: Set Up Steam SDK
+      if: ${{ inputs.disable-steam-sdk == 'false' }}
+      run: | 
+          echo "STEAM_SDK_LOCATION=`pwd`/steam_sdk" >> $GITHUB_ENV
+          curl -o ./steam_sdk.zip ${{ inputs.steam-sdk-url }}
+          mkdir -p ${{ env.STEAM_SDK_LOCATION }}
+          unzip ./steam_sdk.zip -d ${{ env.STEAM_SDK_LOCATION }}
+          rm -f ./steam_sdk.zip
+          sed -i 's/sdk_dir = ".*"/sdk_dir = "${{ env.STEAM_SDK_LOCATION }}/sdk"/g' ./addons/steam_api/settings.tres || true
+    - shell: bash
+      name: Disable Steam SDK
+      if: ${{ inputs.disable-steam-sdk == 'true' }}
+      run: | 
+          sed -i 's/disable = false/disable = true/g' ./addons/steam_api/settings.tres || true
     - name: "Embed build version metadata"
       shell: bash
       run: |
