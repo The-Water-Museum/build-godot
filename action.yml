@@ -116,12 +116,13 @@ runs:
       name: Set Up Steam SDK
       if: ${{ inputs.disable-steam-sdk == 'false' }}
       run: | 
-          echo "STEAM_SDK_LOCATION=`pwd`/steam_sdk" >> $GITHUB_ENV
-          curl -o ./steam_sdk.zip ${{ inputs.steam-sdk-url }}
-          mkdir -p ${{ env.STEAM_SDK_LOCATION }}
-          unzip ./steam_sdk.zip -d ${{ env.STEAM_SDK_LOCATION }}
-          rm -f ./steam_sdk.zip
-          sed -i 's/sdk_dir = ".*"/sdk_dir = "${{ env.STEAM_SDK_LOCATION }}/sdk"/g' ./addons/steam_api/settings.tres || true
+            STEAM_SDK_LOCATION="$(pwd)/steam_sdk"
+            echo "STEAM_SDK_LOCATION=$STEAM_SDK_LOCATION" >> $GITHUB_ENV
+            curl -o ./steam_sdk.zip ${{ inputs.steam-sdk-url }}
+            mkdir -p $STEAM_SDK_LOCATION
+            unzip ./steam_sdk.zip -d $STEAM_SDK_LOCATION
+            rm -f ./steam_sdk.zip
+            sed -i 's/sdk_dir = ".*"/sdk_dir = "$STEAM_SDK_LOCATION/sdk"/g' ./addons/steam_api/settings.tres || true
     - shell: bash
       name: Disable Steam SDK
       if: ${{ inputs.disable-steam-sdk == 'true' }}
