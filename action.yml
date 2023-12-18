@@ -138,8 +138,7 @@ runs:
       run: | 
           sed -i 's/disable = false/disable = true/g' ./addons/steam_api/settings.tres || true
 
-    - shell: bash
-      name: Configure Godot Blender Settings
+    - name: Configure Godot Blender Settings
       shell: bash
       run: |
           mkdir -pv ~/.config/godot
