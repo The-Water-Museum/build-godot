@@ -85,6 +85,7 @@ runs:
         sudo apt -y install wine64
         echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
     - name: Install Blender
+      shell: bash
       run: |
         curl -o blender.tar.xz https://cdn.ctis.me/file/ctisme-cdn/files-pub/ext/water-museum/blender/blender-3.6.5-linux-x64.tar.xz
         tar xvf blender.tar.xz && mv -v $(ls -d */ | grep blender) $HOME/blender
@@ -139,6 +140,7 @@ runs:
 
     - shell: bash
       name: Configure Godot Blender Settings
+      shell: bash
       run: |
           mkdir -pv ~/.config/godot
           echo -e "[gd_resource type=\"EditorSettings\" format=3]\n\n[resource]\nfilesystem/import/blender/blender3_path = \"$HOME/blender\"" > ~/.config/godot/editor_settings-4.tres
