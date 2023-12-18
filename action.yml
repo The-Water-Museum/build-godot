@@ -129,7 +129,7 @@ runs:
       run: | 
             curl -o ./steam_sdk.zip ${{ inputs.steam-sdk-url }}
             mkdir -p ${{ env.STEAM_SDK_LOCATION }}
-            unzip ./steam_sdk.zip -d ${{ env.STEAM_SDK_LOCATION }}
+            unzip ./steam_sdk.zip -o -d ${{ env.STEAM_SDK_LOCATION }}
             rm -f ./steam_sdk.zip
             sed -i 's+sdk_dir = ".*"+sdk_dir = "${{ env.STEAM_SDK_LOCATION }}/sdk"+g' ./addons/steam_api/settings.tres || true
     - shell: bash
