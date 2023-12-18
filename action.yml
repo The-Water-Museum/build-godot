@@ -137,6 +137,12 @@ runs:
       if: ${{ inputs.disable-steam-sdk == 'true' }}
       run: | 
           sed -i 's/disable = false/disable = true/g' ./addons/steam_api/settings.tres || true
+
+    - shell: bash
+      name: Configure Blender
+      run: | 
+          mkdir -pv ~/.config/godot
+          echo -e "[gd_resource type=\"EditorSettings\" format=3]\n\n[resource]\nfilesystem/import/blender/blender3_path = \"$(dirname `which blender`)\"" > ~/.config/godot/editor_settings-4.tres
     - name: "Embed export version metadata"
       shell: bash
       run: |
