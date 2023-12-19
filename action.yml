@@ -88,7 +88,7 @@ runs:
       shell: bash
       run: |
         curl -o blender.tar.xz https://cdn.ctis.me/file/ctisme-cdn/files-pub/ext/water-museum/blender/blender-3.6.5-linux-x64.tar.xz
-        tar xvf blender.tar.xz && mv -v $(ls -d */ | grep blender) $HOME/blender
+        tar xf blender.tar.xz && mv -v $(ls -d */ | grep blender) $HOME/blender
     - name: Install Build Tools
       shell: bash
       id: binutils_install
@@ -129,7 +129,7 @@ runs:
       run: | 
             curl -o ./steam_sdk.zip ${{ inputs.steam-sdk-url }}
             mkdir -p ${{ env.STEAM_SDK_LOCATION }}
-            unzip -o ./steam_sdk.zip -d ${{ env.STEAM_SDK_LOCATION }}
+            unzip -qq -o ./steam_sdk.zip -d ${{ env.STEAM_SDK_LOCATION }}
             rm -f ./steam_sdk.zip
             sed -i 's+sdk_dir = ".*"+sdk_dir = "${{ env.STEAM_SDK_LOCATION }}/sdk"+g' ./addons/steam_api/settings.tres || true
     - shell: bash
@@ -137,7 +137,6 @@ runs:
       if: ${{ inputs.disable-steam-sdk == 'true' }}
       run: | 
           sed -i 's/disable = false/disable = true/g' ./addons/steam_api/settings.tres || true
-
     - name: Configure Godot Blender Settings
       shell: bash
       run: |
