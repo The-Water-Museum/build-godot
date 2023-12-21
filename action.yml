@@ -82,7 +82,7 @@ runs:
       id: wine_install
       run: |
         sudo apt update
-        sudo apt -y install wine64
+        sudo apt -y install wine64 wine32
         echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
     - name: Install Blender
       shell: bash
