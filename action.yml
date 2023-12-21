@@ -81,9 +81,8 @@ runs:
       shell: bash
       id: wine_install
       run: |
-        dpkg --add-architecture i386
         sudo apt update
-        sudo apt -y install wine64 wine32
+        sudo apt -y install wine64
         echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
     - name: Install Blender
       shell: bash
@@ -182,6 +181,7 @@ runs:
         export_debug: ${{ inputs.godot-debug }}
         verbose: ${{ inputs.godot-verbose }}
         use_godot_4: ${{ inputs.godot-v4 }}
+        cache: true
     - name: Upload HTML5 build artifact
       uses: actions/upload-artifact@v3
       with:
