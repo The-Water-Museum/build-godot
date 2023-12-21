@@ -81,6 +81,7 @@ runs:
       shell: bash
       id: wine_install
       run: |
+        dpkg --add-architecture i386
         sudo apt update
         sudo apt -y install wine64 wine32
         echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
