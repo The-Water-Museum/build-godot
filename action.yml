@@ -171,7 +171,7 @@ runs:
           echo 'config/name="${{ inputs.version }}"' >>./override.cfg
     - name: Build Game with Godot Engine
       id: build
-      uses: The-Water-Museum/godot-export@v5.2.0
+      uses: The-Water-Museum/godot-export@v5.2.0-importbugfix
       with:
         godot_executable_download_url: ${{ inputs.godot-executable-url }}
         godot_export_templates_download_url: ${{ inputs.godot-export-templates-url }}
