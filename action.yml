@@ -74,9 +74,10 @@ runs:
   using: "composite"
   steps:
     - name: Check out game repository
-      uses: actions/checkout@v2.3.1
+      uses: actions/checkout@v4.1.1
       with:
         fetch-depth: 0
+        lfs: true
     - name: Install Wine
       shell: bash
       id: wine_install
